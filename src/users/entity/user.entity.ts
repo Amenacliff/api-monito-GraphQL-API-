@@ -6,6 +6,8 @@ export class User {
   @Column()
   emailAddress: string;
   @Column()
+  @Column()
+  hashUserId: string;
   passwordHash: string;
   @Column('text', { array: true })
   projects: string[];
@@ -13,6 +15,6 @@ export class User {
   apiKey: string;
   @Column()
   timeZone: string;
-  @Column()
+  @Column('bool', { default: true })
   notificationTurnedOn: boolean;
 }
