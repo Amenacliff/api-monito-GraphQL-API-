@@ -4,6 +4,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { DataSource } from 'typeorm';
+import { User } from './users/entity/user.entity';
 
 const TypeOrmConfig = TypeOrmModule.forRootAsync({
   inject: [ConfigService],
@@ -14,7 +16,7 @@ const TypeOrmConfig = TypeOrmModule.forRootAsync({
     username: config.get('POSTGRESQL_USER_NAME'),
     password: '',
     database: config.get('POSTGRESQL_DBNAME'),
-    entities: [],
+    entities: [User],
     synchronize: true,
   }),
 });
@@ -28,4 +30,6 @@ const configModuleConfig = ConfigModule.forRoot({
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private dataSource: DataSource) {}
+}
