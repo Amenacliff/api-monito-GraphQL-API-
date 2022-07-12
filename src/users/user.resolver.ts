@@ -5,9 +5,8 @@ import { ChangeUserPassword, CreateUser, LoginUser } from "./dto/requests.dto";
 import * as bcrypt from "bcrypt";
 import { ChangeUserPasswordRes, LoginUserRes } from "./dto/response.dto";
 import { BCRYPT_SALT } from "src/constants/bcrypt.salt";
-import { sign as signJWT } from "jsonwebtoken";
 import { JWT_PAYLOAD } from "src/types/jwt";
-import { Response, Request, RequestHandler } from "express";
+import { Response, Request } from "express";
 import { COOKIE_TOKEN } from "src/constants/cookie";
 import { JwtUtils } from "src/utils/jwt.util";
 
