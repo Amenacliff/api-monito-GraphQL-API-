@@ -47,4 +47,13 @@ export class UsersService {
       }
     });
   }
+
+  async getAllUsers(): Promise<User[] | null> {
+    try {
+      return await this.userRepository.find();
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
 }

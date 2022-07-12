@@ -1,4 +1,12 @@
-import { ArgsType, Field } from "@nestjs/graphql";
+import { ArgsType, Field, ObjectType } from "@nestjs/graphql";
+
+@ObjectType()
+class Response {
+  @Field()
+  sucess: boolean;
+  @Field()
+  reason: string;
+}
 
 @ArgsType()
 class CreateUser {
@@ -8,4 +16,4 @@ class CreateUser {
   password: string;
 }
 
-export { CreateUser };
+export { CreateUser, Response };

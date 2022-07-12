@@ -7,10 +7,19 @@ import * as bcrypt from "bcrypt";
 @Resolver(() => User)
 export class UserResolver {
   constructor(private userService: UsersService) {}
+  @Query(() => [User])
+  async users(): Promise<User[]> {
+    return this.userService.getAllUsers();
+  }
   @Query(() => User)
-  async user(@Args("hashedId") hasedId: string): Promise<User> {
-    const user = await this.userService.findOneById(hasedId);
-    return user;
+  async user(@Args("hashedId") hasedId: string): Promise<User | null> {
+    try {
+      const user = await this.userService.findOneById(hasedId);
+      return user;
+    } catch (error) {
+      console.log(error);
+      null;
+    }
   }
 
   @Mutation(() => String)

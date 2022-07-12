@@ -17,6 +17,7 @@ type User {
 }
 
 type Query {
+  users: [User!]!
   user(hashedId: String!): User!
 }
 
