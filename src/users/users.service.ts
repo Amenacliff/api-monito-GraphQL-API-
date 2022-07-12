@@ -48,6 +48,22 @@ export class UsersService {
     });
   }
 
+  async findOneByEmail(emailAddress: string): Promise<User | null> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const userObject = await this.userRepository.findOne({
+          where: {
+            emailAddress: emailAddress,
+          },
+        });
+        resolve(userObject);
+      } catch (error) {
+        console.log(error);
+        reject(null);
+      }
+    });
+  }
+
   async getAllUsers(): Promise<User[] | null> {
     try {
       return await this.userRepository.find();

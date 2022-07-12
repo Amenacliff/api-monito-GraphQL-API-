@@ -16,6 +16,12 @@ type User {
   notificationTurnedOn: Boolean!
 }
 
+type LoginUserRes {
+  userId: String!
+  isLoggedIn: Boolean!
+  reason: String!
+}
+
 type Query {
   users: [User!]!
   user(hashedId: String!): User!
@@ -23,4 +29,5 @@ type Query {
 
 type Mutation {
   createUser(emailAddress: String!, password: String!): String!
+  loginUser(emailAddress: String!, password: String!): LoginUserRes!
 }
