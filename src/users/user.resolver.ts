@@ -1,18 +1,19 @@
 import { Args, Resolver, Query, Mutation, Context } from "@nestjs/graphql";
 import { User } from "./entity/user.entity";
 import { UsersService } from "./users.service";
-import { CreateUser, LoginUser } from "./dto/requests.dto";
+import { ChangeUserPassword, CreateUser, LoginUser } from "./dto/requests.dto";
 import * as bcrypt from "bcrypt";
-import { LoginUserRes } from "./dto/response.dto";
+import { ChangeUserPasswordRes, LoginUserRes } from "./dto/response.dto";
 import { BCRYPT_SALT } from "src/constants/bcrypt.salt";
 import { sign as signJWT } from "jsonwebtoken";
 import { JWT_PAYLOAD } from "src/types/jwt";
-import { Response } from "express";
+import { Response, Request, RequestHandler } from "express";
 import { COOKIE_TOKEN } from "src/constants/cookie";
+import { JwtUtils } from "src/utils/jwt.util";
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(private userService: UsersService) {}
+  constructor(private userService: UsersService, private jwtUtil: JwtUtils) {}
   @Query(() => [User])
   async users(): Promise<User[]> {
     return this.userService.getAllUsers();
@@ -61,7 +62,7 @@ export class UserResolver {
     };
     console.log(jwtPayLoad, process.env.JWT_SIGNING_KEY);
 
-    const signedToken = signJWT(JSON.stringify(jwtPayLoad), process.env.JWT_SIGNING_KEY);
+    const signedToken = this.jwtUtil.signJWTToken(jwtPayLoad, "7d", process.env.JWT_SIGNING_KEY);
 
     const response: Response = context.res;
 
@@ -76,6 +77,49 @@ export class UserResolver {
       isLoggedIn: true,
       reason: "",
       userId: userData.hashUserId,
+    };
+  }
+
+  @Mutation(() => ChangeUserPasswordRes)
+  async changePassword(@Args() args: ChangeUserPassword, @Context() context): Promise<ChangeUserPasswordRes> {
+    const request: Request = context.req;
+    const cookie = request.cookies[COOKIE_TOKEN];
+    if (cookie === undefined) {
+      return {
+        isPasswordChanged: false,
+        reason: "Unauthorized Access",
+      };
+    }
+
+    const isCookieValid = this.jwtUtil.verifyJwtToken(cookie, process.env.JWT_SIGNING_KEY);
+    if (isCookieValid == false) {
+      return {
+        isPasswordChanged: false,
+        reason: "Unauthorized Access",
+      };
+    }
+
+    const userCookieData = this.jwtUtil.parseJwt<JWT_PAYLOAD>(cookie);
+    console.log(userCookieData);
+    if (userCookieData === null) {
+      return {
+        isPasswordChanged: false,
+        reason: "Unauthorized Access",
+      };
+    }
+
+    const newPasswordHash = await bcrypt.hash(args.newPassword, BCRYPT_SALT);
+    const isPasswordSaved = await this.userService.setUserPassword(newPasswordHash, userCookieData.userId);
+    if (isPasswordSaved === false) {
+      return {
+        isPasswordChanged: false,
+        reason: "An Error Occured while Updating Password",
+      };
+    }
+
+    return {
+      isPasswordChanged: true,
+      reason: "",
     };
   }
 }

@@ -72,4 +72,21 @@ export class UsersService {
       return null;
     }
   }
+
+  async setUserPassword(newPasswordHash: string, userId: string): Promise<boolean> {
+    try {
+      await this.userRepository.update(
+        {
+          hashUserId: userId,
+        },
+        {
+          passwordHash: newPasswordHash,
+        },
+      );
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
 }

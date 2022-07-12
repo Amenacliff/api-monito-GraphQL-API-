@@ -9,3 +9,11 @@ export class LoginUserRes {
   @Field()
   reason: string;
 }
+
+@ObjectType()
+export class ChangeUserPasswordRes {
+  @Field()
+  isPasswordChanged: boolean;
+  @Field()
+  reason: string;
+}
