@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType, ArrayElement } from "@nestjs/graphql";
+import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 @Entity()
 @ObjectType()
@@ -9,14 +9,14 @@ export class User {
   @Column()
   @Field()
   emailAddress: string;
-  @Column()
+  @Column("uuid")
   @Field()
   hashUserId: string;
   @Column()
   @Field()
   passwordHash: string;
   @Column("text", { array: true })
-  @Field(returns => [String])
+  @Field(() => [String])
   projects: string[];
   @Column()
   @Field()

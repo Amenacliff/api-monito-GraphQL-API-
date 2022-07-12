@@ -18,7 +18,8 @@ export class UsersService {
         await this.userRepository.insert({
           apiKey: uniqueId(),
           emailAddress: emailAddress,
-          hashUserId: uniqueId,
+          hashUserId: newUserHashedId,
+          projects: [],
           passwordHash: passwordHash,
           timeZone: "",
         });

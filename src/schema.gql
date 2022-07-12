@@ -19,3 +19,7 @@ type User {
 type Query {
   user(hashedId: String!): User!
 }
+
+type Mutation {
+  createUser(emailAddress: String!, password: String!): String!
+}
