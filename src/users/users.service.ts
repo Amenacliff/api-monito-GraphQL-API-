@@ -31,7 +31,7 @@ export class UsersService {
     });
   }
 
-  async findOne(hashedId: string): Promise<User | null> {
+  async findOneById(hashedId: string): Promise<User | null> {
     return new Promise(async (resolve, reject) => {
       try {
         const userObject = await this.userRepository.findOne({
