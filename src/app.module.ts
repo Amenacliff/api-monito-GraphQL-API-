@@ -11,6 +11,7 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { join } from "path";
 import { ProjectService } from './project/project.service';
 import { ProjectModule } from './project/project.module';
+import { EndpointsModule } from './endpoints/endpoints.module';
 
 const TypeOrmConfig = TypeOrmModule.forRootAsync({
   inject: [ConfigService],
@@ -41,7 +42,7 @@ const GraphQLConfig = GraphQLModule.forRoot<ApolloDriverConfig>({
 });
 
 @Module({
-  imports: [UsersModule, configModuleConfig, TypeOrmConfig, GraphQLConfig, ProjectModule],
+  imports: [UsersModule, configModuleConfig, TypeOrmConfig, GraphQLConfig, ProjectModule, EndpointsModule],
   controllers: [AppController],
   providers: [AppService, ProjectService],
 })
