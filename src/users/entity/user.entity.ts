@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { Project } from "src/project/entity/project.entity";
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 @Entity()
 @ObjectType()
@@ -16,8 +17,8 @@ export class User {
   @Field()
   passwordHash: string;
   @Column("text", { array: true })
-  @Field(() => [String])
-  projects: string[];
+  @Field(() => [Project])
+  projects: Project[];
   @Column()
   @Field()
   apiKey: string;
