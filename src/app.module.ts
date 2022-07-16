@@ -9,6 +9,8 @@ import { User } from "./users/entity/user.entity";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { join } from "path";
+import { ProjectService } from './project/project.service';
+import { ProjectModule } from './project/project.module';
 
 const TypeOrmConfig = TypeOrmModule.forRootAsync({
   inject: [ConfigService],
@@ -39,9 +41,9 @@ const GraphQLConfig = GraphQLModule.forRoot<ApolloDriverConfig>({
 });
 
 @Module({
-  imports: [UsersModule, configModuleConfig, TypeOrmConfig, GraphQLConfig],
+  imports: [UsersModule, configModuleConfig, TypeOrmConfig, GraphQLConfig, ProjectModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ProjectService],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
