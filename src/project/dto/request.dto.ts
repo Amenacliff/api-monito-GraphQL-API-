@@ -7,3 +7,9 @@ export class CreateProjectReq {
   @Field()
   endpoint: string;
 }
+
+@ArgsType()
+export class DeleteProjectReq {
+  @Field()
+  projectId: string;
+}

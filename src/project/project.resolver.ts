@@ -3,7 +3,7 @@ import { Request } from "express";
 import { COOKIE_TOKEN } from "src/constants/cookie";
 import { JWT_PAYLOAD } from "src/types/jwt";
 import { JwtUtils } from "src/utils/jwt.util";
-import { CreateProjectReq } from "./dto/request.dto";
+import { CreateProjectReq, DeleteProjectReq } from "./dto/request.dto";
 import { CreateProjectRes } from "./dto/response.dto";
 import { Project } from "./entity/project.entity";
 import { ProjectService } from "./project.service";
@@ -45,6 +45,16 @@ export class ProjectResolver {
     }
 
     try {
+      const projectsWithSameEndpoint = await this.projectService.findByBaseURL(args.endpoint);
+
+      if (projectsWithSameEndpoint.length > 0) {
+        return {
+          created: false,
+          projectId: "",
+          reason: "A Project with this endpoint already exists ",
+        };
+      }
+
       const projectDetails = await this.projectService.create(args.name, args.endpoint, jwtData.userId);
       if (projectDetails[0] == false) {
         return {
@@ -69,4 +79,6 @@ export class ProjectResolver {
       };
     }
   }
+
+  //   async deleteProject(@Args() args: DeleteProjectReq, @Context() context) {}
 }

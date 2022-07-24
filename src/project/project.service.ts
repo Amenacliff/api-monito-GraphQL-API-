@@ -64,4 +64,12 @@ export class ProjectService {
       return [false, ""];
     }
   }
+
+  async findByBaseURL(baseURL: string): Promise<Project[]> {
+    return await this.projectRepository.find({
+      where: {
+        apiUrl: baseURL,
+      },
+    });
+  }
 }
