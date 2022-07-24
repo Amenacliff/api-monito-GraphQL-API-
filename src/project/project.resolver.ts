@@ -15,7 +15,7 @@ export class ProjectResolver {
   @Mutation(() => CreateProjectRes)
   async createProject(@Args() args: CreateProjectReq, @Context() context): Promise<CreateProjectRes> {
     const request: Request = context.req;
-    const cookie = request.cookies(COOKIE_TOKEN);
+    const cookie = request.cookies[COOKIE_TOKEN];
     if (!cookie) {
       return {
         created: false,
@@ -45,7 +45,7 @@ export class ProjectResolver {
     }
 
     try {
-      const projectDetails = this.projectService.create(args.name, args.endpoint, jwtData.userId);
+      const projectDetails = await this.projectService.create(args.name, args.endpoint, jwtData.userId);
       if (projectDetails[0] == false) {
         return {
           created: false,
@@ -54,6 +54,7 @@ export class ProjectResolver {
         };
       }
 
+      console.log(projectDetails);
       return {
         created: true,
         projectId: projectDetails[1],

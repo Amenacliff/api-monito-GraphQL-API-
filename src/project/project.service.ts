@@ -55,7 +55,7 @@ export class ProjectService {
       const user = await this.userService.findOneById(userId);
       const currentProjects = user.projects;
       currentProjects.push(newProjectId);
-      await queryRunner.manager.update(User, { hashedUserId: userId }, { projects: currentProjects });
+      await queryRunner.manager.update(User, { hashUserId: userId }, { projects: currentProjects });
       await queryRunner.commitTransaction();
       return [true, newProjectId];
     } catch (error) {
