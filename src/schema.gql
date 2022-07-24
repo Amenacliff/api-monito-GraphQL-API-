@@ -27,6 +27,12 @@ type ChangeUserPasswordRes {
   reason: String!
 }
 
+type CreateProjectRes {
+  created: Boolean!
+  projectId: String!
+  reason: String!
+}
+
 type Query {
   users: [User!]!
   user(hashedId: String!): User!
@@ -36,4 +42,5 @@ type Mutation {
   createUser(emailAddress: String!, password: String!): String!
   loginUser(emailAddress: String!, password: String!): LoginUserRes!
   changePassword(newPassword: String!): ChangeUserPasswordRes!
+  createProject(name: String!, endpoint: String!): CreateProjectRes!
 }

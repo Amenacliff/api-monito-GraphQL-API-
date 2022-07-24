@@ -1,8 +1,9 @@
 import { Int } from "@nestjs/graphql";
-import { Field } from "graphql-composer-decorators";
+import { Field, ObjectType } from "graphql-composer-decorators";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { ProjectScore } from "../types/project.types";
 
+@ObjectType()
 @Entity()
 export class Project {
   @PrimaryGeneratedColumn()

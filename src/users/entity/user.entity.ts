@@ -17,8 +17,8 @@ export class User {
   @Field()
   passwordHash: string;
   @Column("text", { array: true })
-  @Field(() => [Project])
-  projects: Project[];
+  @Field(() => [String])
+  projects: string[];
   @Column()
   @Field()
   apiKey: string;

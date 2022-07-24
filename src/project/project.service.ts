@@ -1,20 +1,29 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { Repository } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 import { Project } from "./entity/project.entity";
 
 import { v4 as uniqueId } from "uuid";
+import { UsersService } from "src/users/users.service";
+import { User } from "src/users/entity/user.entity";
+import { InjectRepository } from "@nestjs/typeorm";
 
 @Injectable()
 export class ProjectService {
   constructor(
-    @Inject(Project)
+    @InjectRepository(Project)
     private projectRepository: Repository<Project>,
+    private dataSource: DataSource,
+    private userService: UsersService,
   ) {}
 
-  async create(projectName: string, endPoint: string): Promise<[boolean, string]> {
+  async create(projectName: string, endPoint: string, userId: string): Promise<[boolean, string]> {
     const newProjectId = uniqueId();
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
-      await this.projectRepository.insert({
+      await queryRunner.manager.insert(Project, {
         apiUrl: endPoint,
         endPoints: [],
         projectId: newProjectId,
@@ -42,8 +51,15 @@ export class ProjectService {
         },
         teamMembers: [],
       });
+
+      const user = await this.userService.findOneById(userId);
+      const currentProjects = user.projects;
+      currentProjects.push(newProjectId);
+      await queryRunner.manager.update(User, { hashedUserId: userId }, { projects: currentProjects });
+      await queryRunner.commitTransaction();
       return [true, newProjectId];
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       console.log(error);
       return [false, ""];
     }

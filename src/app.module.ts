@@ -9,9 +9,11 @@ import { User } from "./users/entity/user.entity";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { join } from "path";
-import { ProjectService } from './project/project.service';
-import { ProjectModule } from './project/project.module';
-import { EndpointsModule } from './endpoints/endpoints.module';
+import { ProjectService } from "./project/project.service";
+import { ProjectModule } from "./project/project.module";
+import { EndpointsModule } from "./endpoints/endpoints.module";
+import { Project } from "./project/entity/project.entity";
+import { EndpointsService } from "./endpoints/endpoints.service";
 
 const TypeOrmConfig = TypeOrmModule.forRootAsync({
   inject: [ConfigService],
@@ -22,7 +24,7 @@ const TypeOrmConfig = TypeOrmModule.forRootAsync({
     username: config.get("POSTGRESQL_USER_NAME"),
     password: "",
     database: config.get("POSTGRESQL_DBNAME"),
-    entities: [User],
+    entities: [User, Project],
     synchronize: true,
   }),
 });
@@ -44,7 +46,7 @@ const GraphQLConfig = GraphQLModule.forRoot<ApolloDriverConfig>({
 @Module({
   imports: [UsersModule, configModuleConfig, TypeOrmConfig, GraphQLConfig, ProjectModule, EndpointsModule],
   controllers: [AppController],
-  providers: [AppService, ProjectService],
+  providers: [AppService],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
