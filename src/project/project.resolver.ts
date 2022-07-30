@@ -3,7 +3,7 @@ import { Request } from "express";
 import { COOKIE_TOKEN } from "src/constants/cookie";
 import { JWT_PAYLOAD } from "src/types/jwt";
 import { JwtUtils } from "src/utils/jwt.util";
-import { CreateProjectReq, DeleteProjectReq } from "./dto/request.dto";
+import { CreateProjectReq } from "./dto/request.dto";
 import { CreateProjectRes } from "./dto/response.dto";
 import { Project } from "./entity/project.entity";
 import { ProjectService } from "./project.service";

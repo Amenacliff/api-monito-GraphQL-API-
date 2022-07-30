@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { DataSource, Repository } from "typeorm";
 import { Project } from "./entity/project.entity";
 
@@ -69,6 +69,14 @@ export class ProjectService {
     return await this.projectRepository.find({
       where: {
         apiUrl: baseURL,
+      },
+    });
+  }
+
+  async findById(projectId: string): Promise<Project> {
+    return await this.projectRepository.findOne({
+      where: {
+        projectId: projectId,
       },
     });
   }

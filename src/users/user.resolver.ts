@@ -1,4 +1,4 @@
-import { Args, Resolver, Query, Mutation, Context } from "@nestjs/graphql";
+import { Args, Resolver, Query, Mutation, Context, ResolveField, Parent } from "@nestjs/graphql";
 import { User } from "./entity/user.entity";
 import { UsersService } from "./users.service";
 import { ChangeUserPassword, CreateUser, LoginUser } from "./dto/requests.dto";
@@ -6,13 +6,15 @@ import * as bcrypt from "bcrypt";
 import { ChangeUserPasswordRes, LoginUserRes } from "./dto/response.dto";
 import { BCRYPT_SALT } from "src/constants/bcrypt.salt";
 import { JWT_PAYLOAD } from "src/types/jwt";
-import { Response, Request } from "express";
+import e, { Response, Request } from "express";
 import { COOKIE_TOKEN } from "src/constants/cookie";
 import { JwtUtils } from "src/utils/jwt.util";
+import { Project } from "src/project/entity/project.entity";
+import { ProjectService } from "src/project/project.service";
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(private userService: UsersService, private jwtUtil: JwtUtils) {}
+  constructor(private userService: UsersService, private jwtUtil: JwtUtils, private projectService: ProjectService) {}
   @Query(() => [User])
   async users(): Promise<User[]> {
     return this.userService.getAllUsers();
@@ -27,7 +29,19 @@ export class UserResolver {
       null;
     }
   }
-
+  @ResolveField(() => [Project])
+  async projects(@Parent() user: User): Promise<Project[]> {
+    const projectIds = user.projects;
+    const getProjectOperations = projectIds.map(eachId => {
+      return this.projectService.findById(eachId);
+    });
+    try {
+      return await Promise.all(getProjectOperations);
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  }
   @Mutation(() => String)
   async createUser(@Args() args: CreateUser): Promise<string> {
     const hashedPassword = await bcrypt.hash(args.password, BCRYPT_SALT);
